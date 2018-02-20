@@ -9,6 +9,10 @@ pub fn users(state: State<database::PostgresConnectionConfig>, username: String)
 
     let search_term = format!("%{}%", username);
 
+    if username.len() < 3 || username.len() > 16 {
+        return("nope").to_string();
+    }
+
     match Connection::connect(connection_string.to_string(), TlsMode::None) {
         Ok(c) => {
             match c.query(
@@ -25,8 +29,10 @@ pub fn users(state: State<database::PostgresConnectionConfig>, username: String)
                     let mut num_users = 0;
 
                     for row in rows.iter() {
+                        let user_id: i32 = row.get("u");
                         let user_name: String = row.get("n");
 
+                        users_string.push_str(&user_id.to_string());
                         users_string.push_str(&user_name);
                         users_string.push_str(", ");
 
