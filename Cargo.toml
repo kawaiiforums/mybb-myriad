@@ -1,7 +1,10 @@
 [package]
 name = "myriad"
 version = "0.1.0"
-authors = ["Kane Valentine <kane@cute.im>"]
+authors = [
+	"Kane Valentine <kane@cute.im>",
+	"Euan Torano <euantorano@fastmail.co.uk>"
+]
 
 [dependencies]
 rocket = "0.3.6"
