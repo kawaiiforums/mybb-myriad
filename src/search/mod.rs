@@ -10,7 +10,13 @@ pub fn users(state: State<ConnectionHolder>, username: String) -> String {
         Err(e) => panic!("Error connecting to Postgres server: {:#?}", e)
     };
 
-    let query = conn.execute("SELECT uid AS u, username AS n FROM mybb_users WHERE username like {} ORDER BY postnum DESC, lastactive DESC, username LIMIT 15",
-                             &[username.as_str()]).unwrap();
-    format!("{}", query)
+    let u = format!("%{}%", username);
+    let query = conn.query("
+        SELECT uid AS u, username AS n 
+        FROM mybb_users 
+        WHERE username like {} 
+        ORDER BY postnum DESC, lastactive DESC, username LIMIT 15",
+        u:String
+    );
+    format!("{}", query.unwrap())
 }

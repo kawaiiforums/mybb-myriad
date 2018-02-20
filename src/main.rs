@@ -1,5 +1,6 @@
 #![feature(plugin)]
 #![plugin(rocket_codegen)]
+#![feature(type_ascription)]
 #[macro_use]
 extern crate serde_derive;
 extern crate serde;
@@ -38,7 +39,6 @@ fn main() {
 
 fn mount_paths(conf: String) {
   rocket::ignite()
-    .mount("/", routes![index])
     .mount("/search", routes![search::users])
     .manage(ConnectionHolder(conf))
     .launch();
