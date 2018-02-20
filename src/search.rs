@@ -7,6 +7,8 @@ use database;
 pub fn users(state: State<database::PostgresConnectionConfig>, username: String) -> String {
     let connection_string = &state.connection_string();
 
+    let search_term = format!("%{}%", username);
+
     match Connection::connect(connection_string.to_string(), TlsMode::None) {
         Ok(c) => {
             match c.query(
@@ -15,7 +17,7 @@ pub fn users(state: State<database::PostgresConnectionConfig>, username: String)
                 WHERE username LIKE $1
                 ORDER BY postnum DESC, lastactive DESC, username LIMIT 15",
                 &[
-                    &username
+                    &search_term
                 ]
             ) {
                 Ok(rows) => {
