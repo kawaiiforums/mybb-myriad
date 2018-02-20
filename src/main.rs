@@ -1,10 +1,16 @@
+#![feature(plugin)]
+#![plugin(rocket_codegen)]
 #[macro_use]
 extern crate serde_derive;
 extern crate serde;
 extern crate postgres;
 extern crate envy;
+extern crate rocket;
 
 use postgres::{Connection, TlsMode};
+use rocket::State;
+
+mod search;
 
 #[derive(Deserialize, Debug)]
 struct postgres_config {
@@ -14,6 +20,8 @@ struct postgres_config {
   postgres_user: String,
   postgres_password: String,
 }
+
+pub struct ConnectionHolder(String);
 
 fn main() {
     let pg_config = match envy::from_env::<postgres_config>() {
@@ -25,8 +33,13 @@ fn main() {
         pg_config.postgres_password, pg_config.postgres_host, pg_config.postgres_port, 
         pg_config.postgres_db);
 
-    let conn = match Connection::connect(connection_string, TlsMode::None) {
-        Ok(c) => c,
-        Err(e) => panic!("Error connecting to Postgres server: {:#?}", e)
-    };
+    mount_paths(connection_string);
+}
+
+fn mount_paths(conf: String) {
+  rocket::ignite()
+    .mount("/", routes![index])
+    .mount("/search", routes![search::users])
+    .manage(ConnectionHolder(conf))
+    .launch();
 }
