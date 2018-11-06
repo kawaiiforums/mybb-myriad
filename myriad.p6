@@ -20,7 +20,6 @@ my $application = route {
             STATEMENT
         $sth.execute("$expression%");
         my @rows = $sth.allrows(:array-of-hash);
-        say @rows;
         content 'application/json', @rows;
     }
 }
