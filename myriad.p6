@@ -11,16 +11,26 @@ my $dbh = DBIish.connect(
     :RaiseError
 );
 
+my $total-requests = 0;
+my $successful-requests = 0;
+
 my $application = route {
     get -> 'u', $expression {
+        $total-requests++;
         my $sth = $dbh.prepare(q:to/STATEMENT/);
             SELECT uid AS u, username AS n FROM mybb_users
             WHERE username LIKE ?
             ORDER BY postnum DESC, lastactive DESC, username LIMIT 15
             STATEMENT
-        $sth.execute("$expression%");
+        my $result = $sth.execute("$expression%");
         my @rows = $sth.allrows(:array-of-hash);
+        $successful-requests++ if $result > 0;
         content 'application/json', @rows;
+    }
+
+    get -> 'statistics' {
+        my %statistics = :$total-requests, :$successful-requests;
+        content 'application/json', %statistics;
     }
 }
 
