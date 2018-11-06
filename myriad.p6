@@ -7,7 +7,8 @@ my $dbh = DBIish.connect(
     :port(%*ENV<MYRIAD_DATABASE_PORT>),
     :database(%*ENV<MYRIAD_DATABASE_NAME>),
     :user(%*ENV<MYRIAD_DATABASE_USER>),
-    :password(%*ENV<MYRIAD_DATABASE_PASSWORD>)
+    :password(%*ENV<MYRIAD_DATABASE_PASSWORD>),
+    :RaiseError
 );
 
 my $application = route {
