@@ -17,8 +17,8 @@ my $successful-requests = 0;
 my $application = route {
     get -> 'u', $expression {
         $total-requests++;
-        my $sth = $dbh.prepare(q:to/STATEMENT/);
-            SELECT uid AS u, username AS n FROM mybb_users
+        my $sth = $dbh.prepare(qq:to/STATEMENT/);
+            SELECT uid AS u, username AS n FROM %*ENV<MYRIAD_DATABASE_TABLE_PREFIX>_users
             WHERE username LIKE ?
             ORDER BY postnum DESC, lastactive DESC, username LIMIT 15
             STATEMENT
