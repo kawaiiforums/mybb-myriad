@@ -30,7 +30,7 @@ my $application = route {
         $expression = $expression.lc().trim();
         my $sth = $dbh.prepare(qq:to/STATEMENT/);
             SELECT uid AS u, username AS n FROM %defaults<database-table-prefix>_users
-            WHERE username LIKE ?
+            WHERE username ILIKE ?
             ORDER BY postnum DESC, lastactive DESC, username LIMIT 15
             STATEMENT
         my $result = $sth.execute("$expression%");
