@@ -45,7 +45,6 @@ my $application = route {
             %statistics<uptime> = (DateTime.now - $start-time).Int;
             content 'application/json', %statistics;
         }
-
     }
 }
 
