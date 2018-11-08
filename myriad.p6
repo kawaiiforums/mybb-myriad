@@ -8,6 +8,7 @@ my %defaults = database-hostname => %*ENV<MYRIAD_DATABASE_HOST> || 'localhost',
                database-table-prefix => %*ENV<MYRIAD_DATABASE_TABLE_PREFIX> || 'mybb',
                database-user => %*ENV<MYRIAD_DATABASE_USER> || 'mybb',
                database-password => %*ENV<MYRIAD_DATABASE_PASSWORD> || 'password',
+               debug-mode => %*ENV<MYRIAD_DEBUG> || 0,
 ;
 
 my $dbh = DBIish.connect(
@@ -38,10 +39,13 @@ my $application = route {
         content 'application/json', @rows;
     }
 
-    get -> 'statistics' {
-        my %statistics = :$total-requests, :$successful-requests;
-        %statistics<uptime> = (DateTime.now - $start-time).Int;
-        content 'application/json', %statistics;
+    if %defaults<debug-mode> {
+        get -> 'statistics' {
+            my %statistics = :$total-requests, :$successful-requests;
+            %statistics<uptime> = (DateTime.now - $start-time).Int;
+            content 'application/json', %statistics;
+        }
+
     }
 }
 
