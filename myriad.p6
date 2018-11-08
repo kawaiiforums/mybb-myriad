@@ -24,8 +24,9 @@ my $total-requests = 0;
 my $successful-requests = 0;
 
 my $application = route {
-    get -> 'u', $expression {
+    get -> 'u', $expression is copy {
         $total-requests++;
+        $expression = $expression.lc().trim();
         my $sth = $dbh.prepare(qq:to/STATEMENT/);
             SELECT uid AS u, username AS n FROM %defaults<database-table-prefix>_users
             WHERE username LIKE ?
