@@ -19,6 +19,7 @@ my $dbh = DBIish.connect(
     :RaiseError,
 );
 
+my $start-time = DateTime.now;
 my $total-requests = 0;
 my $successful-requests = 0;
 
@@ -38,6 +39,7 @@ my $application = route {
 
     get -> 'statistics' {
         my %statistics = :$total-requests, :$successful-requests;
+        %statistics<uptime> = (DateTime.now - $start-time).Int;
         content 'application/json', %statistics;
     }
 }
