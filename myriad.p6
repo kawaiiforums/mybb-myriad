@@ -1,6 +1,7 @@
 use DBIish;
 use Cro::HTTP::Router;
 use Cro::HTTP::Server;
+use Myriad::Controller::Statistics;
 
 my %defaults = database-hostname => %*ENV<MYRIAD_DATABASE_HOST> || 'localhost',
                database-port => %*ENV<MYRIAD_DATABASE_PORT> || 5432,
@@ -20,13 +21,9 @@ my $dbh = DBIish.connect(
     :RaiseError,
 );
 
-my $start-time = DateTime.now;
-my $total-requests = 0;
-my $successful-requests = 0;
-
 my $application = route {
     get -> 'u', $expression is copy {
-        $total-requests++;
+        log-request;
         $expression = $expression.lc().trim();
         my $sth = $dbh.prepare(qq:to/STATEMENT/);
             SELECT uid AS u, username AS n FROM %defaults<database-table-prefix>_users
@@ -34,16 +31,12 @@ my $application = route {
             STATEMENT
         my $result = $sth.execute("$expression%");
         my @rows = $sth.allrows(:array-of-hash);
-        $successful-requests++ if $result > 0;
+        log-successful-request if $result > 0;
         content 'application/json', @rows;
     }
 
     if %defaults<debug-mode> {
-        get -> 'statistics' {
-            my %statistics = :$total-requests, :$successful-requests;
-            %statistics<uptime> = (DateTime.now - $start-time).Int;
-            content 'application/json', %statistics;
-        }
+        include statistics;
     }
 }
 
