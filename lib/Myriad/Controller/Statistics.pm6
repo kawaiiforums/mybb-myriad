@@ -1,4 +1,4 @@
-package Myriad::Controller::Statistics;
+unit package Myriad::Controller::Statistics;
 use Cro::HTTP::Router;
 
 my $start-time = DateTime.now;
