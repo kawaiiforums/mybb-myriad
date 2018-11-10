@@ -1,6 +1,7 @@
 use DBIish;
 use Cro::HTTP::Router;
 use Cro::HTTP::Server;
+use Myriad::Controller::Users;
 use Myriad::Controller::Statistics;
 
 my %defaults = database-hostname => %*ENV<MYRIAD_DATABASE_HOST> || 'localhost',
@@ -22,18 +23,7 @@ my $dbh = DBIish.connect(
 );
 
 my $application = route {
-    get -> 'u', $expression is copy {
-        log-request;
-        $expression = $expression.lc().trim();
-        my $sth = $dbh.prepare(qq:to/STATEMENT/);
-            SELECT uid AS u, username AS n FROM %defaults<database-table-prefix>_users
-            WHERE username ILIKE ? ORDER BY postnum DESC, lastactive DESC, username LIMIT 15
-            STATEMENT
-        my $result = $sth.execute("$expression%");
-        my @rows = $sth.allrows(:array-of-hash);
-        log-successful-request if $result > 0;
-        content 'application/json', @rows;
-    }
+    include users(%defaults, $dbh);
 
     if %defaults<debug-mode> {
         include statistics;
