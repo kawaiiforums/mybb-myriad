@@ -10,7 +10,7 @@ sub threads(%defaults, $dbh) is export {
         my $sth = $dbh.prepare(qq:to/STATEMENT/);
         SELECT t.tid AS u,
                t.subject AS n,
-               p.message AS c
+          LEFT (p.message, 32) AS c
           FROM %defaults<database-table-prefix>_threads t
           JOIN %defaults<database-table-prefix>_posts p 
             ON p.pid = t.firstpost
