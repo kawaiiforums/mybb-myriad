@@ -17,3 +17,4 @@ sub statistics() is export {
 
 sub log-request is export { $total-requests++ }
 sub log-successful-request is export { $successful-requests++ }
+

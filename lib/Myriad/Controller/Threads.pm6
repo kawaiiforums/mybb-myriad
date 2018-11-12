@@ -12,7 +12,7 @@ sub threads(%defaults, $dbh) is export {
                   t.subject AS title,
              LEFT (p.message, 32) AS content
              FROM %defaults<database-table-prefix>_threads t
-             JOIN %defaults<database-table-prefix>_posts p 
+             JOIN %defaults<database-table-prefix>_posts p
                ON p.pid = t.firstpost
             WHERE t.subject ILIKE ?
          ORDER BY t.dateline DESC, t.lastpost DESC, t.subject
