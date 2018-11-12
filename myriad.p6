@@ -1,7 +1,9 @@
 use DBIish;
 use Cro::HTTP::Router;
 use Cro::HTTP::Server;
+
 use Myriad::Controller::Users;
+use Myriad::Controller::Threads;
 use Myriad::Controller::Statistics;
 
 my %defaults = database-hostname => %*ENV<MYRIAD_DATABASE_HOST> || 'localhost',
@@ -24,6 +26,8 @@ my $dbh = DBIish.connect(
 
 my $application = route {
     include users(%defaults, $dbh);
+
+    include threads(%defaults, $dbh);
 
     if %defaults<debug-mode> {
         include statistics;
