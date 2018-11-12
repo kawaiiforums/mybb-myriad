@@ -8,9 +8,9 @@ sub threads(%defaults, $dbh) is export {
         log-request;
         $expression = $expression.lc().trim();
         my $sth = $dbh.prepare(qq:to/STATEMENT/);
-           SELECT t.tid AS u,
-                  t.subject AS n,
-             LEFT (p.message, 32) AS c
+           SELECT t.tid AS tid,
+                  t.subject AS title,
+             LEFT (p.message, 32) AS content
              FROM %defaults<database-table-prefix>_threads t
              JOIN %defaults<database-table-prefix>_posts p 
                ON p.pid = t.firstpost
