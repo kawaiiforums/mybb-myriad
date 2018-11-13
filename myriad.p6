@@ -4,6 +4,7 @@ use Cro::HTTP::Server;
 
 use Myriad::Controller::Users;
 use Myriad::Controller::Threads;
+use Myriad::Controller::Emoji;
 use Myriad::Controller::Statistics;
 
 my %defaults = database-hostname => %*ENV<MYRIAD_DATABASE_HOST> || 'localhost',
@@ -28,6 +29,8 @@ my $application = route {
     include users(%defaults, $dbh);
 
     include threads(%defaults, $dbh);
+
+    include emoji(%defaults, $dbh);
 
     if %defaults<debug-mode> {
         include statistics;
