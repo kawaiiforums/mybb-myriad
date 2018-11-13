@@ -8,8 +8,7 @@ sub emoji(%defaults, $dbh) is export {
         log-request;
         $expression = $expression.lc().trim();
         my $sth = $dbh.prepare(qq:to/STATEMENT/);
-           SELECT sid AS sid,
-                  name AS name,
+           SELECT name AS name,
                   find AS code,
                   image AS image
              FROM %defaults<database-table-prefix>_smilies
