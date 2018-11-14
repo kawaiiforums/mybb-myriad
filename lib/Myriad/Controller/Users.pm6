@@ -14,7 +14,7 @@ sub users(%defaults, $dbh) is export {
          ORDER BY postnum DESC, lastactive DESC, username
             LIMIT 15
         STATEMENT
-        my $result = $sth.execute("$expression%");
+        my $result = $sth.execute("%$expression%");
         my @rows = $sth.allrows(:array-of-hash);
         log-successful-request if $result > 0;
         content 'application/json', @rows;
